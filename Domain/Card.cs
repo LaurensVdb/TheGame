@@ -4,5 +4,5 @@ namespace Domain;
 
 public class Card
 {
-    public int Id { get; set; }
+    public int ValueCard { get; set; }
 }
