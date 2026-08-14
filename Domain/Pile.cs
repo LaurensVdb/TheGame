@@ -9,11 +9,20 @@ public class Pile
     public int TopCardValue { get; set; }
     public bool CanPlay(Card card)
     {
-        return true;
+        if (Direction == PileDirection.Ascending && card.ValueCard > TopCardValue)
+        {
+            return true;
+        }
+        if (Direction == PileDirection.Descending && card.ValueCard < TopCardValue)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public void Play(Card card)
     {
-
+        TopCardValue = card.ValueCard;
     }
 }
