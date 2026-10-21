@@ -4,10 +4,10 @@ namespace Domain;
 
 public class GameState
 {
-    private int requiredCardsToPlay = 2;
+
     private bool isGameOver = false;
 
-    public int RequiredCardsToPlay => requiredCardsToPlay;
+    public int RequiredCardsToPlay { get; set; } = 2;
     public bool IsGameOver => isGameOver;
     public List<Move> MovesThisTurn { get; set; } = new List<Move>();
 
@@ -19,5 +19,5 @@ public class GameState
 
     public Pile AscendingPile2 { get; set; } = new Pile();
     public Pile DescendingPile2 { get; set; } = new Pile();
-
+    public Player CurrentPlayer { get; set; }
 }
