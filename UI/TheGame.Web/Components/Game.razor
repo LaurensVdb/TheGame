@@ -23,13 +23,6 @@
                 </MudButton>
             </MudButtonGroup>
         </MudStack>
-
-        
-        @if (GameState.IsGameOver)
-        {
-            <MudAlert Severity="Severity.Error">Game over. No valid moves left.</MudAlert>
-        }
-
     </MudPaper>
 </MudContainer>
 @code {
@@ -52,12 +45,12 @@
         Validation = GameEngine.ValidateMove(Move);
         if (!Validation.IsValid)
         {
-            GameState.IsGameOver = !GameEngine.HasValidMove(GameState);
-            Move = new Move();
+            RefreshGameOver();
             return;
         }
-    
+       
         GameEngine.ApplyMove(GameState, Move);
+        Move = new Move();
      
     }
     private void NextTurn()
@@ -67,7 +60,20 @@
         {
             GameEngine.StartTurn(GameState);
         }
+        RefreshGameOver();
+        Move = new Move();
+    }
+
+    private void RefreshGameOver()
+    {
         GameState.IsGameOver = !GameEngine.HasValidMove(GameState);
+
+        if (GameState.IsGameOver)
+        {
+            Validation = new ValidationResult(
+                false,
+                "Game over. No valid moves left.");
+        }
     }
 
 }
