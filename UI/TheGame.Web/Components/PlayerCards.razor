@@ -1,0 +1,35 @@
+﻿<MudText Typo="Typo.subtitle1" Class="mb-2">
+    Your hand (@GameState.CurrentPlayer.Hand.Count)
+</MudText>
+<MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
+    @foreach (var card in GameState.CurrentPlayer.Hand)
+    {
+        <MudButton OnClick="@(() => OnCardSelected(card))" Disabled="@(SelectCard != null)">@card.ValueCard</MudButton>
+    }
+</MudButtonGroup>
+
+@code {
+    [Parameter]
+    public GameState GameState { get; set; }
+
+    [Parameter]
+    public EventCallback<GameState> GameStateChanged { get; set; }
+
+
+    [Parameter]
+    public Card SelectCard { get; set; }
+
+    [Parameter]
+    public EventCallback<Card> SelectCardChanged { get; set; }
+
+    private void OnCardSelected(Card card)
+    {
+        if (SelectCard == null)
+        {
+            SelectCard = card;
+        }
+        SelectCardChanged.InvokeAsync(SelectCard);
+        GameStateChanged.InvokeAsync(GameState);
+    }
+
+}

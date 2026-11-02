@@ -1,0 +1,63 @@
+﻿@using Domain
+
+<MudText Typo="Typo.h4" Class="mb-2">
+    Game piles
+</MudText>
+<MudGrid Spacing="2" Class="mb-4">
+    <MudItem xs="6" sm="3">
+        <MudPaper Class="pa-2" Outlined="true">
+            <MudText Typo="Typo.caption" Align="Align.Center">Descending Pile 1</MudText>
+            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.DescendingPile1))"
+                       Disabled="@IsDisabled">
+                @GameState.DescendingPile1.TopCardValue
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="6" sm="3">
+        <MudPaper Class="pa-2" Outlined="true">
+            <MudText Typo="Typo.caption" Align="Align.Center">Descending Pile 2</MudText>
+            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.DescendingPile2))"
+                       Disabled="@IsDisabled">
+                @GameState.DescendingPile2.TopCardValue
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="6" sm="3">
+        <MudPaper Class="pa-2" Outlined="true">
+            <MudText Typo="Typo.caption" Align="Align.Center">Ascending Pile 1</MudText>
+            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.AscendingPile1))"
+                       Disabled="@IsDisabled">
+                @GameState.AscendingPile1.TopCardValue
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="6" sm="3">
+        <MudPaper Class="pa-2" Outlined="true">
+            <MudText Typo="Typo.caption" Align="Align.Center">Ascending Pile 2</MudText>
+            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.AscendingPile2))"
+                       Disabled="@IsDisabled">
+                @GameState.AscendingPile2.TopCardValue
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter, EditorRequired]
+    public GameState GameState { get; set; } = default!;
+
+    [Parameter]
+    public Pile SelectedPile { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<Pile> SelectedPileChanged { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    private Task SelectPileAsync(Pile pile) =>
+        SelectedPileChanged.InvokeAsync(pile);
+}

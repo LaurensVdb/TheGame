@@ -1,0 +1,85 @@
+﻿@using Domain
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+
+
+<MudPaper>
+    <MudText Typo="Typo.h3">@GameState.CurrentPlayer.Name</MudText>
+    <TargetPiles GameState="@GameState" IsDisabled="@(Move.Card is null)" @bind-SelectedPile="Move.TargetPile"
+                 @bind-SelectedPile:after="OnPileSelected" />
+    <ValidationResultDisplay Validation="@Validation" />
+    <MudDivider Class="mb-3" />
+
+    <PlayerCards @bind-GameState="@GameState" @bind-SelectCard="@Move.Card" />
+
+
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@NextTurn" Disabled="@(Move.Card != null)">
+        Next Turn
+    </MudButton>
+    @if (GameState.IsGameOver)
+    {
+        <MudAlert Severity="Severity.Error">Game over. No valid moves left.</MudAlert>
+    }
+
+</MudPaper>
+
+
+    
+
+
+
+@code {
+    GameState GameState { get; set; }
+    GameEngine GameEngine { get; set; }
+
+    Move Move { get; set; }
+    ValidationResult? Validation { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        GameState = new GameState();
+        Move = new Move();
+
+        GameState.Players.Add(new Player { Name = "Player 1", IsAi = false });
+        GameState.CurrentPlayer = GameState.Players.FirstOrDefault()!;
+        GameState.Deck = new Deck();
+        GameState.Deck.Shuffle();
+        GameEngine = new GameEngine(new MoveService());
+        GameEngine.CheckPlayerHand(GameState);
+        GameEngine.StartTurn(GameState);
+
+    }
+
+    private void OnPileSelected()
+    {
+        Validation = null;
+
+        if (Move.Card is null)
+            return;
+
+        Validation = GameEngine.ValidateMove(Move);
+        if (!Validation.IsValid)
+        {
+            GameState.IsGameOver = GameEngine.CheckGameOver(GameState);
+            return;
+        }
+       
+
+        GameEngine.ApplyMove(GameState, Move);
+        Move.Card = null;
+    }
+    private void NextTurn()
+    {
+        Validation = GameEngine.EndTurn(GameState);
+        if (Validation.IsValid)
+        {
+            GameEngine.StartTurn(GameState);
+        }
+        GameState.IsGameOver = GameEngine.CheckGameOver(GameState);
+    }
+
+}

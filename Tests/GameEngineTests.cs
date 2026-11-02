@@ -2,7 +2,6 @@ using System;
 using Application;
 using Domain;
 using Domain.Enums;
-using Domain.Exceptions;
 
 namespace Tests;
 
@@ -39,7 +38,8 @@ public class GameEngineTests
         var move = new Move { Player = player, Card = card, TargetPile = pile };
         var result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.Valid, result);
+        Assert.True(result.IsValid);
+        Assert.Null(result.ErrorMessage);
     }
 
     [Fact]
@@ -53,7 +53,8 @@ public class GameEngineTests
         var move = new Move { Player = player, Card = card, TargetPile = pile };
         var result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.IsInvalid, result);
+        Assert.False(result.IsValid);
+        Assert.Equal("Invalid move.", result.ErrorMessage);
     }
 
     [Fact]
@@ -67,14 +68,14 @@ public class GameEngineTests
         var move = new Move { Player = player, Card = card, TargetPile = pile };
         var result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.Valid, result);
+        Assert.True(result.IsValid);
 
         card = new Card { ValueCard = 10 };
         pile = new Pile { TopCardValue = 20, Direction = PileDirection.Ascending };
         move = new Move { Player = player, Card = card, TargetPile = pile };
         result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.Valid, result);
+        Assert.True(result.IsValid);
     }
     [Fact]
     public void ValidateMove_ReturnsInValidForReverseMove()
@@ -87,14 +88,14 @@ public class GameEngineTests
         var move = new Move { Player = player, Card = card, TargetPile = pile };
         var result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.IsInvalid, result);
+        Assert.False(result.IsValid);
 
         card = new Card { ValueCard = 10 };
         pile = new Pile { TopCardValue = 30, Direction = PileDirection.Ascending };
         move = new Move { Player = player, Card = card, TargetPile = pile };
         result = _gameEngine.ValidateMove(move);
 
-        Assert.Equal(MoveResult.IsInvalid, result);
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -127,14 +128,15 @@ public class GameEngineTests
         gameState.MovesThisTurn.Add(new Move());
         gameState.MovesThisTurn.Add(new Move());
 
-        _gameEngine.EndTurn(gameState);
+        var result = _gameEngine.EndTurn(gameState);
 
+        Assert.True(result.IsValid);
         Assert.Equal(gameState.CurrentPlayer, gameState.Players.FirstOrDefault());
         Assert.Equal(7, gameState.CurrentPlayer.Hand.Count);
     }
 
     [Fact]
-    public void EndTurn_PlayerDidntPlayEnoughMoves_ThrowsException()
+    public void EndTurn_PlayerDidntPlayEnoughMoves_ReturnsInvalidResult()
     {
         var player = new Player()
         {
@@ -150,7 +152,11 @@ public class GameEngineTests
         var gameState = new GameState() { CurrentPlayer = player, Players = new List<Player>() { player } };
         gameState.MovesThisTurn.Add(new Move());
 
-        Assert.Throws<InvalidMoveException>(() => _gameEngine.EndTurn(gameState));
+        var result = _gameEngine.EndTurn(gameState);
+
+        Assert.False(result.IsValid);
+        Assert.Equal("Not enough moves played this turn.", result.ErrorMessage);
+        Assert.Equal(5, gameState.CurrentPlayer.Hand.Count);
     }
 
     [Fact]

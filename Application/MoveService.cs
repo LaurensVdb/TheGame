@@ -10,7 +10,7 @@ public interface IMoveService
 {
     List<Move> GetAllValidMoves(GameState state);
 
-    MoveResult ValidateMove(Move move);
+    ValidationResult ValidateMove(Move move);
 }
 
 public class MoveService : IMoveService
@@ -28,17 +28,17 @@ public class MoveService : IMoveService
         return state.CurrentPlayer.Hand
             .SelectMany(card => piles
             .Select(pile => new Move { Player = state.CurrentPlayer, Card = card, TargetPile = pile }))
-            .Where(move => ValidateMove(move) == MoveResult.Valid)
+            .Where(move => ValidateMove(move).IsValid)
             .ToList();
     }
 
-    public MoveResult ValidateMove(Move move)
+    public ValidationResult ValidateMove(Move move)
     {
         if (!move.TargetPile.CanPlay(move.Card) && !IsReverseMove(move.TargetPile, move.Card))
         {
-            return MoveResult.IsInvalid;
+            return new ValidationResult(false, "Invalid move.");
         }
-        return MoveResult.Valid;
+        return new ValidationResult(true);
     }
 
     private bool IsReverseMove(Pile pile, Card card)

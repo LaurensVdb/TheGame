@@ -1,0 +1,9 @@
+﻿@if (Validation is { IsValid: false })
+{
+    <MudAlert Severity="Severity.Error">@Validation.ErrorMessage</MudAlert>
+}
+
+@code {
+    [Parameter]
+    public ValidationResult? Validation { get; set; }
+}

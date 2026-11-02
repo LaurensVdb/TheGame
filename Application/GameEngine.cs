@@ -1,7 +1,6 @@
 using System;
 using Domain;
 using Domain.Enums;
-using Domain.Exceptions;
 
 namespace Application;
 
@@ -9,10 +8,10 @@ public interface IGameEngine
 {
     void ApplyMove(GameState gameState, Move move);
     bool CheckGameOver(GameState state);
-    void EndTurn(GameState state);
+    ValidationResult EndTurn(GameState state);
     bool HasValidMove(GameState state);
     void StartTurn(GameState state);
-    MoveResult ValidateMove(Move move);
+    ValidationResult ValidateMove(Move move);
 }
 
 public class GameEngine : IGameEngine
@@ -23,7 +22,7 @@ public class GameEngine : IGameEngine
     {
         _moveService = moveService;
     }
-    public MoveResult ValidateMove(Move move)
+    public ValidationResult ValidateMove(Move move)
     {
         return _moveService.ValidateMove(move);
     }
@@ -47,11 +46,16 @@ public class GameEngine : IGameEngine
         NextPlayer(state);
     }
 
-    public void EndTurn(GameState state)
+    public ValidationResult EndTurn(GameState state)
     {
-        CheckIfRequiredMovesPlayed(state);
-        CheckPlayerHand(state);
+        var result = CheckIfRequiredMovesPlayed(state);
+        if (!result.IsValid)
+        {
+            return result;
+        }
 
+        CheckPlayerHand(state);
+        return result;
     }
 
     private void NextPlayer(GameState state)
@@ -61,14 +65,16 @@ public class GameEngine : IGameEngine
         state.CurrentPlayer = state.Players[nextPlayerIndex];
     }
 
-    private void CheckIfRequiredMovesPlayed(GameState state)
+    public ValidationResult CheckIfRequiredMovesPlayed(GameState state)
     {
         if (state.MovesThisTurn.Count < state.RequiredCardsToPlay)
         {
-            throw new InvalidMoveException("Not enough moves played this turn.");
+            return new ValidationResult(false, "Not enough moves played this turn.");
         }
+
+        return new ValidationResult(true);
     }
-    private void CheckPlayerHand(GameState state)
+    public void CheckPlayerHand(GameState state)
     {
         while (state.CurrentPlayer.Hand.Count < 7)
         {
@@ -85,5 +91,8 @@ public class GameEngine : IGameEngine
     public bool CheckGameOver(GameState state)
     {
         return !HasValidMove(state);
+
+
+
     }
 }
