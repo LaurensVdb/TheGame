@@ -7,7 +7,6 @@ namespace Application;
 public interface IGameEngine
 {
     void ApplyMove(GameState gameState, Move move);
-    bool CheckGameOver(GameState state);
     ValidationResult EndTurn(GameState state);
     bool HasValidMove(GameState state);
     void StartTurn(GameState state);
@@ -22,6 +21,30 @@ public class GameEngine : IGameEngine
     {
         _moveService = moveService;
     }
+
+    public void StartGame(GameState state, IEnumerable<Player> players)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(players);
+
+        var playerList = players.ToList();
+        if (playerList.Count == 0)
+        {
+            throw new ArgumentException("At least one player is required.", nameof(players));
+        }
+
+        state.Players.Clear();
+        state.Players.AddRange(playerList);
+        state.CurrentPlayer = state.Players[0];
+
+        state.Deck.Shuffle();
+        state.MovesThisTurn.Clear();
+        state.RequiredCardsToPlay = 2;
+        state.IsGameOver = false;
+
+        CheckPlayerHand(state);
+    }
+
     public ValidationResult ValidateMove(Move move)
     {
         return _moveService.ValidateMove(move);
@@ -86,13 +109,5 @@ public class GameEngine : IGameEngine
 
             state.CurrentPlayer.Hand.Add(card);
         }
-    }
-
-    public bool CheckGameOver(GameState state)
-    {
-        return !HasValidMove(state);
-
-
-
     }
 }

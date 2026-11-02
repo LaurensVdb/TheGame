@@ -1,12 +1,18 @@
-﻿<MudText Typo="Typo.subtitle1" Class="mb-2">
-    Your hand (@GameState.CurrentPlayer.Hand.Count)
-</MudText>
-<MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
-    @foreach (var card in GameState.CurrentPlayer.Hand)
-    {
-        <MudButton OnClick="@(() => OnCardSelected(card))" Disabled="@(SelectCard != null)">@card.ValueCard</MudButton>
-    }
-</MudButtonGroup>
+﻿<MudStack AlignItems="AlignItems.Center">
+    <MudText Typo="Typo.subtitle1" Class="mb-2">
+        @GameState.CurrentPlayer.Name's hand (@GameState.CurrentPlayer.Hand.Count)
+    </MudText>
+
+    <MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
+        @foreach (var card in GameState.CurrentPlayer.Hand)
+        {
+            <MudButton OnClick="@(() => OnCardSelected(card))" Disabled="@(SelectCard != null || GameState.IsGameOver)">
+                @card.ValueCard
+            </MudButton>
+        }
+    </MudButtonGroup>
+    
+</MudStack>
 
 @code {
     [Parameter]
