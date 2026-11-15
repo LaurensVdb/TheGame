@@ -65,7 +65,6 @@ public class GameEngine : IGameEngine
     public void StartTurn(GameState state)
     {
         state.MovesThisTurn.Clear();
-        state.RequiredCardsToPlay = 2;
         NextPlayer(state);
     }
 
@@ -90,7 +89,7 @@ public class GameEngine : IGameEngine
 
     public ValidationResult CheckIfRequiredMovesPlayed(GameState state)
     {
-        if (state.MovesThisTurn.Count < state.RequiredCardsToPlay)
+        if ((state.MovesThisTurn.Count < state.RequiredCardsToPlay))
         {
             return new ValidationResult(false, "Not enough moves played this turn.");
         }
@@ -99,7 +98,7 @@ public class GameEngine : IGameEngine
     }
     public void CheckPlayerHand(GameState state)
     {
-        while (state.CurrentPlayer.Hand.Count < 7)
+        while (state.CurrentPlayer.Hand.Count < 7 && state.Deck.Cards.Count > 0)
         {
             var card = state.Deck.Draw();
             if (card == null)
@@ -108,6 +107,11 @@ public class GameEngine : IGameEngine
             }
 
             state.CurrentPlayer.Hand.Add(card);
+        }
+
+        if (state.Deck.Cards.Count <= 0)
+        {
+            state.RequiredCardsToPlay = 1;
         }
     }
 }

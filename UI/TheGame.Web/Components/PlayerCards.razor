@@ -2,7 +2,9 @@
     <MudText Typo="Typo.subtitle1" Class="mb-2">
         @GameState.CurrentPlayer.Name's hand (@GameState.CurrentPlayer.Hand.Count)
     </MudText>
-
+    <MudText Typo="Typo.subtitle1" Class="mb-2">
+        Cards in deck (@GameState.Deck.Cards.Count) and required cards to play (@GameState.RequiredCardsToPlay)
+    </MudText>
     <MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
         @foreach (var card in GameState.CurrentPlayer.Hand)
         {

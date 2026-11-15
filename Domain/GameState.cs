@@ -28,4 +28,6 @@ public class GameState
     public Pile AscendingPile2 { get; set; } = new Pile();
     public Pile DescendingPile2 { get; set; } = new Pile();
     public Player CurrentPlayer { get; set; }
+
+    public bool IsGameWon => Deck.Cards.Count == 0 && CurrentPlayer.Hand.Count == 0;
 }

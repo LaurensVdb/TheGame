@@ -23,6 +23,10 @@
                 </MudButton>
             </MudButtonGroup>
         </MudStack>
+        @if (GameState.IsGameWon)
+        {
+            <MudAlert Severity="Severity.Success">Congratulations! You have won the game!</MudAlert>
+        }
     </MudPaper>
 </MudContainer>
 @code {
@@ -45,7 +49,6 @@
         Validation = GameEngine.ValidateMove(Move);
         if (!Validation.IsValid)
         {
-            RefreshGameOver();
             return;
         }
        
@@ -60,20 +63,21 @@
         {
             GameEngine.StartTurn(GameState);
         }
-        RefreshGameOver();
+        CheckIfGameIsOver();
         Move = new Move();
     }
 
-    private void RefreshGameOver()
+    private void CheckIfGameIsOver()
     {
         GameState.IsGameOver = !GameEngine.HasValidMove(GameState);
-
+    
         if (GameState.IsGameOver)
         {
             Validation = new ValidationResult(
                 false,
                 "Game over. No valid moves left.");
         }
+       
     }
 
 }
