@@ -1,49 +1,59 @@
 ﻿@using Domain
 
-<MudText Typo="Typo.h6" Class="mb-2">
-    Game piles
-</MudText>
-<MudGrid Spacing="2" Class="mb-4">
+<section class="piles-section" aria-labelledby="piles-heading">
+    <div class="section-heading">
+        <div>
+            <p class="game-eyebrow">The board</p>
+            <MudText Typo="Typo.h6" Class="section-title" id="piles-heading">Choose your next move</MudText>
+        </div>
+        <span class="section-hint">Select a pile to play</span>
+    </div>
+<MudGrid Spacing="3" Class="pile-grid">
     <MudItem xs="6" sm="3">
-        <MudPaper Class="pa-2" Outlined="true">
-            <MudText Typo="Typo.caption" Align="Align.Center">Descending Pile 1</MudText>
-            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.DescendingPile1))"
-                       Disabled="@IsDisabled">
+        <MudPaper Class="pile-card pile-card--descending" Outlined="true">
+            <MudText Typo="Typo.caption" Class="pile-label" Align="Align.Center">Descending <span>01</span></MudText>
+            <MudButton FullWidth Variant="Variant.Filled" Class="pile-value"
+                       aria-label="@($"Descending pile 1, top card {GameState.DescendingPile1.TopCardValue}")"
+                       OnClick="@(() => SelectPileAsync(GameState.DescendingPile1))" Disabled="@IsDisabled">
                 @GameState.DescendingPile1.TopCardValue
             </MudButton>
         </MudPaper>
     </MudItem>
 
     <MudItem xs="6" sm="3">
-        <MudPaper Class="pa-2" Outlined="true">
-            <MudText Typo="Typo.caption" Align="Align.Center">Descending Pile 2</MudText>
-            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.DescendingPile2))"
-                       Disabled="@IsDisabled">
+        <MudPaper Class="pile-card pile-card--descending" Outlined="true">
+            <MudText Typo="Typo.caption" Class="pile-label" Align="Align.Center">Descending <span>02</span></MudText>
+            <MudButton FullWidth Variant="Variant.Filled" Class="pile-value"
+                       aria-label="@($"Descending pile 2, top card {GameState.DescendingPile2.TopCardValue}")"
+                       OnClick="@(() => SelectPileAsync(GameState.DescendingPile2))" Disabled="@IsDisabled">
                 @GameState.DescendingPile2.TopCardValue
             </MudButton>
         </MudPaper>
     </MudItem>
 
     <MudItem xs="6" sm="3">
-        <MudPaper Class="pa-2" Outlined="true">
-            <MudText Typo="Typo.caption" Align="Align.Center">Ascending Pile 1</MudText>
-            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.AscendingPile1))"
-                       Disabled="@IsDisabled">
+        <MudPaper Class="pile-card pile-card--ascending" Outlined="true">
+            <MudText Typo="Typo.caption" Class="pile-label" Align="Align.Center">Ascending <span>01</span></MudText>
+            <MudButton FullWidth Variant="Variant.Filled" Class="pile-value"
+                       aria-label="@($"Ascending pile 1, top card {GameState.AscendingPile1.TopCardValue}")"
+                       OnClick="@(() => SelectPileAsync(GameState.AscendingPile1))" Disabled="@IsDisabled">
                 @GameState.AscendingPile1.TopCardValue
             </MudButton>
         </MudPaper>
     </MudItem>
 
     <MudItem xs="6" sm="3">
-        <MudPaper Class="pa-2" Outlined="true">
-            <MudText Typo="Typo.caption" Align="Align.Center">Ascending Pile 2</MudText>
-            <MudButton FullWidth Variant="Variant.Filled" OnClick="@(() => SelectPileAsync(GameState.AscendingPile2))"
-                       Disabled="@IsDisabled">
+        <MudPaper Class="pile-card pile-card--ascending" Outlined="true">
+            <MudText Typo="Typo.caption" Class="pile-label" Align="Align.Center">Ascending <span>02</span></MudText>
+            <MudButton FullWidth Variant="Variant.Filled" Class="pile-value"
+                       aria-label="@($"Ascending pile 2, top card {GameState.AscendingPile2.TopCardValue}")"
+                       OnClick="@(() => SelectPileAsync(GameState.AscendingPile2))" Disabled="@IsDisabled">
                 @GameState.AscendingPile2.TopCardValue
             </MudButton>
         </MudPaper>
     </MudItem>
 </MudGrid>
+</section>
 
 @code {
     [Parameter, EditorRequired]

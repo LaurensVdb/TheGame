@@ -1,6 +1,8 @@
 ﻿@if (Validation is { IsValid: false })
 {
-    <MudAlert Severity="Severity.Error">@Validation.ErrorMessage</MudAlert>
+    <MudAlert Severity="Severity.Error" Class="game-validation" role="status">
+        @Validation.ErrorMessage
+    </MudAlert>
 }
 
 @code {

@@ -1,20 +1,29 @@
-﻿<MudStack AlignItems="AlignItems.Center">
-    <MudText Typo="Typo.subtitle1" Class="mb-2">
-        @GameState.CurrentPlayer.Name's hand (@GameState.CurrentPlayer.Hand.Count)
-    </MudText>
-    <MudText Typo="Typo.subtitle1" Class="mb-2">
-        Cards in deck (@GameState.Deck.Cards.Count) and required cards to play (@GameState.RequiredCardsToPlay)
-    </MudText>
-    <MudButtonGroup Color="Color.Success" Variant="Variant.Outlined">
+﻿<section class="hand-section" aria-label="Player hand">
+    <div class="hand-heading">
+        <div>
+            <MudText Typo="Typo.h6" Class="section-title">@GameState.CurrentPlayer.Name's hand</MudText>
+            <MudText Typo="Typo.body2" Class="hand-count">@GameState.CurrentPlayer.Hand.Count cards available</MudText>
+        </div>
+        <div class="deck-status" aria-label="@($"{GameState.Deck.Cards.Count} cards in deck; {GameState.RequiredCardsToPlay} required to play")">
+            <span class="deck-status-value">@GameState.Deck.Cards.Count</span>
+            <span class="deck-status-label">in deck</span>
+            <span class="deck-status-divider" aria-hidden="true"></span>
+            <span class="deck-status-value">@GameState.RequiredCardsToPlay</span>
+            <span class="deck-status-label">to play</span>
+        </div>
+    </div>
+    <div class="card-hand" role="group" aria-label="Choose a card">
         @foreach (var card in GameState.CurrentPlayer.Hand)
         {
-            <MudButton OnClick="@(() => OnCardSelected(card))" Disabled="@(SelectCard != null || GameState.IsGameOver)">
+            <MudButton OnClick="@(() => OnCardSelected(card))"
+                       Disabled="@(SelectCard != null || GameState.IsGameOver)"
+                       Variant="Variant.Filled" Class="game-card"
+                       aria-label="@($"Select card {card.ValueCard}")">
                 @card.ValueCard
             </MudButton>
         }
-    </MudButtonGroup>
-    
-</MudStack>
+    </div>
+</section>
 
 @code {
     [Parameter]

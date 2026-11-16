@@ -3,29 +3,41 @@
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<MudContainer>
-    <MudPaper>
+<MudContainer MaxWidth="MaxWidth.Large" Class="game-shell">
+    <MudPaper Elevation="0" Class="game-panel">
+        <header class="game-header">
+            <div>
+                <p class="game-eyebrow">A game of focus &amp; foresight</p>
+                <MudText Typo="Typo.h1" Class="game-title">The Game</MudText>
+                <p class="game-subtitle">Play your cards. Find your rhythm. Keep the deck moving.</p>
+            </div>
+        </header>
+
         <TargetPiles GameState="@GameState" IsDisabled="@(Move.Card is null || GameState.IsGameOver)"
                      @bind-SelectedPile="Move.TargetPile" @bind-SelectedPile:after="OnPileSelected" />
-        <ValidationResultDisplay Validation="@Validation" />
-        <MudDivider Class="mb-3" />
+
+        <MudDivider Class="game-divider" />
 
         <PlayerCards @bind-GameState="@GameState" @bind-SelectCard="@Move.Card" />
 
-        <MudStack AlignItems="AlignItems.Center">
-            <MudButtonGroup Color="Color.Info">
-                <MudButton OnClick="@NextTurn" Disabled="@((Move.Card != null) || GameState.IsGameOver)">
-                    Next Turn
-                </MudButton>
-                <MudButton OnClick="@(() => Move = new Move())"
-                           Disabled="@((Move.Card == null) || GameState.IsGameOver)">
-                    Select different card
-                </MudButton>
-            </MudButtonGroup>
-        </MudStack>
+        <ValidationResultDisplay Validation="@Validation" />
+
+        <footer class="game-actions">
+            <MudButton OnClick="@NextTurn" Disabled="@((Move.Card != null) || GameState.IsGameOver)"
+                       Variant="Variant.Filled" Color="Color.Primary" Class="game-action-primary">
+                End turn
+            </MudButton>
+            <MudButton OnClick="@(() => Move = new Move())" Disabled="@((Move.Card == null) || GameState.IsGameOver)"
+                       Variant="Variant.Outlined" Color="Color.Inherit" Class="game-action-secondary">
+                Choose another card
+            </MudButton>
+        </footer>
+
         @if (GameState.IsGameWon)
         {
-            <MudAlert Severity="Severity.Success">Congratulations! You have won the game!</MudAlert>
+            <MudAlert Severity="Severity.Success" Class="game-win-alert">
+                <strong>Well played.</strong> You have won the game!
+            </MudAlert>
         }
     </MudPaper>
 </MudContainer>
